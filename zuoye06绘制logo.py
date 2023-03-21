@@ -35,7 +35,7 @@ class FaceDetect:
 
         smallLogo = cv2.resize(logo, dsize=(faceW, faceH))
         smallLogoH = smallLogo.shape[0]
-        print(smallLogo)
+        print(type(smallLogo))
         self.faceImg[faceY - smallLogoH:faceY + faceH - smallLogoH,faceX:faceX + faceW] = smallLogo
 
 detect = FaceDetect()

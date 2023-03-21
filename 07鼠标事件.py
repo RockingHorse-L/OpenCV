@@ -33,7 +33,6 @@ def drawLine(event, x, y, flags, param):
         cv2.line(img, st_p, end_p, color=(0, 0, 255), thickness=2)
         cv2.imshow('img',  img)
     pass
-
 def callback(event, x, y, flags, param):
     print(param)
     drawLine(event, x, y, flags, param)
@@ -42,7 +41,6 @@ def callback(event, x, y, flags, param):
 def mouseDrawing():
 
     cv2.setMouseCallback('img', callback, 'hello')
-
     cv2.imshow('img', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

@@ -108,8 +108,6 @@ class FaceDetect:
             for col in range(smallLogoW):
                 self.faceImg[faceY+row-smallLogoH, faceX+col] = smallLogo[row,col]
         cv2.imshow('faceImg', self.faceImg)
-        # cv2.imshow('logoGray', logoGray)
-        # cv2.imshow('logoBinary', logoBinary)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         pass
@@ -145,13 +143,11 @@ class FaceDetect:
         # 3. 绘制轮廓
         # 创建一个黑色背景图
         #print(f'logoBinary.shape:{logoGray.shape}')
-        mask = np.zeros(logoGray.shape, dtype=np.uint8)
-        #mask[:, :] = 255
-        #print(f'mask:{mask}')
+        mask_RGB = cv2.merge([logoBinary, logoBinary, logoBinary])
+        mask = np.zeros(mask_RGB.shape, dtype=np.uint8)
         cv2.imshow('mask', mask)
         cv2.drawContours(mask, contours, 1, color=(255, 255, 255), thickness=-1)
         cv2.imshow('mask1', mask)
-
         #缩放的比例 ratio = h/ w
         ratio = logo.shape[0] / logo.shape[1]
         faceX = faceRect[0]
@@ -162,15 +158,10 @@ class FaceDetect:
         smollLogo = cv2.resize(logo, dsize=(faceW, faceH))
         smollmask = cv2.resize(mask, dsize=(faceW, faceH))
         smollmaskH, smollmaskW = smollmask.shape[:2]
-        for row in range(smollmaskH):
-            for col in range(smollmaskW):
-                if smollmask[row, col] == 255:
-                    self.faceImg[faceY+row-smollmaskH, faceX+col] = smollLogo[row, col]
-        # cv2.imshow('faceImg', self.faceImg)
-        # cv2.imshow('logoGray', logoGray)
-        # cv2.imshow('logoBinary', logoBinary)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
+        # 返回255的索引
+        index = np.where(smollmask == 255)
+        # 将所有255的坐标调整一下，再将索引对应的值重新赋值给新坐标
+        self.faceImg[index[0]+faceY-smollmaskH, index[1]+faceX] = smollLogo[index[0], index[1]]
         pass
 
 
