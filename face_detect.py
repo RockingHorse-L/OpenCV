@@ -145,7 +145,7 @@ class FaceDetect:
         # 3. 绘制轮廓
         # 创建一个黑色背景图
         #print(f'logoBinary.shape:{logoGray.shape}')
-        mask = np.zeros(logoGray.shape, dtype=np.uint8)
+        mask = np.zeros(logoBinary.shape, dtype=np.uint8)
         #mask[:, :] = 255
         #print(f'mask:{mask}')
         cv2.imshow('mask', mask)

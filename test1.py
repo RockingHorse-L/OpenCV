@@ -71,7 +71,7 @@ class FaceIndeitify:
         logoGary = cv2.cvtColor(logo, cv2.COLOR_BGR2GRAY)
         retval, logoB = cv2.threshold(logoGary, 100, 255, cv2.THRESH_OTSU)
         imgae, contours, hierarchy = cv2.findContours(logoB, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        mask = np.zeros(logoGary.shape, dtype=np.uint8)
+        mask = np.zeros(logoB.shape, dtype=np.uint8)
         cv2.drawContours(mask, contours, 1, color=(255, 255, 255), thickness=-1)
         ratio = logo.shape[0] / logo.shape[1]
         faceX = rect[0]
@@ -81,10 +81,22 @@ class FaceIndeitify:
         smollLogo = cv2.resize(logo, dsize=(faceW, faceH))
         smollmask = cv2.resize(mask, dsize=(faceW, faceH))
         smollmaskH, smollmaskW = smollmask.shape[:2]
-        for row in range(smollmaskH):
-            for col in range(smollmaskW):
-                if smollmask[row, col] == 255:
-                    self.faceImg[faceY + row, faceX + col] = smollLogo[row, col]
+        # for row in range(smollmaskH):
+        #     for col in range(smollmaskW):
+        #         if smollmask[row, col] == 255:
+        #             self.faceImg[faceY + row, faceX + col] = smollLogo[row, col]
+
+        # 不使用两层循环
+        """
+            先获取全是255对应的坐标值
+            再将坐标值对应的具体指赋值给对应位置
+        """
+        idx = np.where(smollmask == 255)
+        self.faceImg[faceY : faceY + smollmaskH, faceX: faceX + smollmaskW][idx] = smollLogo[idx]
+        # print(f'test:{self.faceImg[faceY: faceY + smollmaskH, faceX: faceX + smollmaskW]}')
+        # print(f'test1{smollLogo[idx]}')
+
+
         pass
 
     def drawGlass(self, image, rect, point):
